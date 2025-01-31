@@ -4,16 +4,17 @@ import com.peerless.peerless_bank.Entities.Transfer;
 import com.peerless.peerless_bank.Service.TransferService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 class TransferControllerTest {
 
@@ -23,42 +24,64 @@ class TransferControllerTest {
     @InjectMocks
     private TransferController transferController;
 
-    private MockMvc mockMvc;
+    private Transfer transfer;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(transferController).build();
-    }
-
-    @Test
-    void testScheduleTransfer_Success() throws Exception {
-        Transfer transfer = new Transfer();
+        transfer = new Transfer();
+        transfer.setTransferId(1L);
         transfer.setSenderAccountId(1L);
         transfer.setRecipientAccountId(2L);
-        transfer.setTransferAmount(new BigDecimal("1000"));
-        transfer.setTransferDate(LocalDateTime.now().plusDays(1));
-
-        Mockito.doNothing().when(transferService).scheduleTransfer(ArgumentMatchers.any(Transfer.class));
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/transfers/schedule")
-                        .contentType("application/json")
-                        .content("{\"senderAccountId\":1, \"recipientAccountId\":2, \"transferAmount\":1000, \"transferDate\":\"2025-01-01T10:00:00\"}"))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
-
-        Mockito.verify(transferService, Mockito.times(1)).scheduleTransfer(ArgumentMatchers.any(Transfer.class));
+        transfer.setTransferAmount(new BigDecimal("1000.00"));
+        transfer.setTransferDate(LocalDateTime.now());
     }
 
     @Test
-    void testScheduleTransfer_InvalidDate() throws Exception {
-        Transfer transfer = new Transfer();
-        transfer.setTransferDate(LocalDateTime.now().minusDays(1)); // invalid date
+    void testScheduleTransfer() {
+        doNothing().when(transferService).scheduleTransfer(any(Transfer.class));
 
-        Mockito.doThrow(new IllegalArgumentException("Transfer Date must be a future date")).when(transferService).scheduleTransfer(ArgumentMatchers.any(Transfer.class));
+        ResponseEntity<String> response = transferController.scheduleTransfer(transfer);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/transfers/schedule")
-                        .contentType("application/json")
-                        .content("{\"senderAccountId\":1, \"recipientAccountId\":2, \"transferAmount\":1000, \"transferDate\":\"2023-01-01T10:00:00\"}"))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+        assertEquals(201, response.getStatusCodeValue());
+        verify(transferService, times(1)).scheduleTransfer(transfer);
+    }
+
+    @Test
+    void testScheduleTransferBadRequest() {
+        doThrow(new IllegalArgumentException("Invalid transfer")).when(transferService).scheduleTransfer(any(Transfer.class));
+
+        ResponseEntity<String> response = transferController.scheduleTransfer(transfer);
+
+        assertEquals(400, response.getStatusCodeValue());
+    }
+
+    @Test
+    void testGetScheduledTransfers() {
+        when(transferService.getScheduledTransfers(1L)).thenReturn(List.of(transfer));
+
+        ResponseEntity<List<Transfer>> response = transferController.getScheduledTransfers(1L);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(1, response.getBody().size());
+    }
+
+    @Test
+    void testCancelScheduledTransfer() {
+        doNothing().when(transferService).cancelScheduledTransfer(1L);
+
+        ResponseEntity<String> response = transferController.cancelScheduledTransfer(1L);
+
+        assertEquals(200, response.getStatusCodeValue());
+        verify(transferService, times(1)).cancelScheduledTransfer(1L);
+    }
+
+    @Test
+    void testCancelScheduledTransferBadRequest() {
+        doThrow(new IllegalArgumentException("Transfer not found")).when(transferService).cancelScheduledTransfer(1L);
+
+        ResponseEntity<String> response = transferController.cancelScheduledTransfer(1L);
+
+        assertEquals(400, response.getStatusCodeValue());
     }
 }

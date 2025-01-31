@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/transfers")
-@RequiredArgsConstructor
+
 public class TransferController {
     private final TransferService transferService;
 
