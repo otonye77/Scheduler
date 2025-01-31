@@ -1,106 +1,109 @@
+# Peerless Bank Transfer Service
 
-Peerless Bank Transfer Service
-Overview
-The Peerless Bank Transfer Service is a RESTful API built with Spring Boot for scheduling, retrieving, processing, and canceling bank transfers. It interacts with a MySQL database using JPA for persistence and provides endpoints for managing scheduled transfers.
+## Overview
+The Peerless Bank Transfer Service is a robust microservice that enables users to schedule, retrieve, and cancel fund transfers. It is built using **Spring Boot**, **Spring Data JPA**, and **Lombok**, ensuring efficient handling of scheduled transfers while maintaining high code maintainability.
 
-Features
-Schedule a transfer between accounts
+## Features
+- Schedule a fund transfer for a future date
+- Retrieve all scheduled transfers for a specific sender
+- Cancel a scheduled transfer before it is processed
+- Automatically process due transfers
 
-Retrieve scheduled transfers for a sender account
+## Technologies Used
+- **Java 17+**
+- **Spring Boot 3+**
+- **Spring Data JPA**
+- **H2/PostgreSQL** (for database operations)
+- **Lombok** (to reduce boilerplate code)
+- **Maven** (for dependency management)
 
-Process due transfers
+## Project Structure
+```
+peerless_bank/
+│── src/
+│   ├── main/
+│   │   ├── java/com/peerless/peerless_bank/
+│   │   │   ├── Controller/TransferController.java
+│   │   │   ├── Entities/Transfer.java
+│   │   │   ├── Repository/TransferRepository.java
+│   │   │   ├── Service/ITransferService.java
+│   │   │   ├── Service/TransferService.java
+│   ├── resources/
+│   │   ├── application.properties
+│── pom.xml
+│── README.md
+```
 
-Cancel a scheduled transfer
+## Endpoints
 
-Persistence using MySQL and JPA
-
-Technologies Used
-Java 17+
-
-Spring Boot 3+
-
-Spring Data JPA
-
-MySQL
-
-Lombok
-
-Hibernate
-
-Jakarta Persistence (JPA)
-
-Installation & Setup
-Prerequisites
-Java 17+
-
-Maven 3+
-
-MySQL database
-
-Clone the Repository
-
-Configure the Database
-
-Update the .env file with your database credentials:
-
-DB_URL=jdbc:mysql://localhost:3306/peerless_bank
-DB_USERNAME=root
-DB_PASSWORD=yourpassword
-
-Alternatively, update the application.properties file directly:
-spring.datasource.url=${DB_URL}
-spring.datasource.username=${DB_USERNAME}
-spring.datasource.password=${DB_PASSWORD}
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
-
-API Endpoints
-
-Schedule a Transfer
-
-Endpoint: POST /api/transfers/schedule
-Request Body:
-
+### 1. Schedule a Transfer
+**POST** `/api/transfers/schedule`
+#### Request Body
+```json
 {
-"senderAccountId": 1,
-"recipientAccountId": 2,
-"transferAmount": 500.00,
-"transferDate": "2024-12-01T10:00:00"
+  "senderAccountId": 123456,
+  "recipientAccountId": 789012,
+  "transferAmount": 150.00,
+  "transferDate": "2024-12-01T10:00:00"
 }
+```
+#### Response
+```json
+"Transfer scheduled successfully"
+```
 
-Response:
-
-{
-"message": "Transfer scheduled successfully",
-"transferId": 101
-}
-
-Retrieve Scheduled Transfers
-
-Endpoint: GET /api/transfers/scheduled/{senderAccountId}
-Response:
-
+### 2. Get Scheduled Transfers
+**GET** `/api/transfers/scheduled/{senderAccountId}`
+#### Response
+```json
 [
-   {
-   "transferId": 101,
-   "senderAccountId": 1,
-   "recipientAccountId": 2,
-   "transferAmount": 500.00,
+  {
+    "transferId": 1,
+    "senderAccountId": 123456,
+    "recipientAccountId": 789012,
+    "transferAmount": 150.00,
     "transferDate": "2024-12-01T10:00:00"
-   }
+  }
 ]
+```
 
-Cancel a Scheduled Transfer
+### 3. Cancel a Scheduled Transfer
+**DELETE** `/api/transfers/cancel/{transferId}`
+#### Response
+```json
+"Transfer cancelled successfully"
+```
 
-Endpoint: DELETE /api/transfers/cancel/{transferId}
-Response:
+## Installation & Setup
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-repo/peerless-bank.git
+   cd peerless-bank
+   ```
+2. Configure your database in `application.properties` (default is H2 for testing, use PostgreSQL for production):
+   ```properties
+   spring.datasource.url=jdbc:h2:mem:peerless_bank
+   spring.datasource.driverClassName=org.h2.Driver
+   spring.datasource.username=sa
+   spring.datasource.password=
+   spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+   ```
+3. Build and run the application:
+   ```sh
+   mvn spring-boot:run
+   ```
+4. Access the API via Postman or any HTTP client.
 
-{
-"message": "Transfer cancelled successfully"
-}
+## Future Enhancements
+- Implement authentication and authorization using **Spring Security**
+- Add real-time notifications for transfer status
+- Support external API integration for executing real bank transfers
 
-Process Due Transfers (Automatic Background Processing)
+## License
+This project is licensed under the MIT License.
 
-A scheduled job runs periodically to process due transfers based on transferDate.
+---
+
+### Author
+**Peerless Bank Development Team**
 
