@@ -2,16 +2,19 @@ package com.peerless.peerless_bank.Service;
 
 import com.peerless.peerless_bank.Entities.Transfer;
 import com.peerless.peerless_bank.Repository.TransferRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 class TransferServiceTest {
 
     @Mock
@@ -22,7 +25,6 @@ class TransferServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Initializes mock objects
         MockitoAnnotations.openMocks(this);
     }
 
@@ -43,11 +45,11 @@ class TransferServiceTest {
         Transfer transfer = new Transfer();
         transfer.setTransferDate(LocalDateTime.now().minusDays(1));
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
             transferService.scheduleTransfer(transfer);
         });
 
-        assertEquals("Transfer Date must be a future date", exception.getMessage());
+        Assertions.assertEquals("Transfer Date must be a future date", exception.getMessage());
     }
 
     @Test
@@ -55,11 +57,10 @@ class TransferServiceTest {
         Transfer transfer = new Transfer();
         transfer.setTransferAmount(BigDecimal.ZERO);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
             transferService.scheduleTransfer(transfer);
         });
 
-        assertEquals("Transfer amount must be positive.", exception.getMessage());
+        Assertions.assertEquals("Transfer amount must be positive.", exception.getMessage());
     }
 }
-
