@@ -104,15 +104,3 @@ Process Due Transfers (Automatic Background Processing)
 
 A scheduled job runs periodically to process due transfers based on transferDate.
 
-
-peerless_bank/
-├── src/main/java/com/peerless/peerless_bank/
-│   ├── controller/TransferController.java
-│   ├── entities/Transfer.java
-│   ├── repository/TransferRepository.java
-│   ├── service/TransferService.java
-│   ├── service/ITransferService.java
-├── src/main/resources/application.properties
-├── pom.xml
-└── README.md
-
