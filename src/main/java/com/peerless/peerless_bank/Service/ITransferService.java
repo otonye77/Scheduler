@@ -8,4 +8,5 @@ public interface ITransferService {
     void scheduleTransfer (Transfer transfer);
     List<Transfer> getScheduledTransfers(Long senderAccountId);
     void processDueTransfer();
+    void cancelScheduledTransfer(Long transferId);
 }
