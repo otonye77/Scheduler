@@ -15,6 +15,11 @@ import java.util.List;
 public class TransferController {
     private final TransferService transferService;
 
+    // Explicit constructor if needed
+    public TransferController(TransferService transferService) {
+        this.transferService = transferService;
+    }
+
     @PostMapping("/schedule")
     public ResponseEntity<String> scheduleTransfer(@RequestBody Transfer transfer) {
         try {
@@ -40,5 +45,4 @@ public class TransferController {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
 }

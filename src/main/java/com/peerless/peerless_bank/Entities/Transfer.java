@@ -21,6 +21,9 @@ public class Transfer {
     @Column(name = "sender_account_id", nullable = false)
     private Long senderAccountId;
 
+    @Column(name = "sender_id", nullable = false) // Added sender_id field
+    private Long senderId;
+
     @Column(name = "recipient_account_id", nullable = false)
     private Long recipientAccountId;
 
@@ -50,6 +53,14 @@ public class Transfer {
 
     public void setSenderAccountId(Long senderAccountId) {
         this.senderAccountId = senderAccountId;
+    }
+
+    public Long getSenderId() {
+        return senderId;
+    }
+
+    public void setSenderId(Long senderId) {
+        this.senderId = senderId;
     }
 
     public Long getRecipientAccountId() {
@@ -91,5 +102,4 @@ public class Transfer {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-
 }

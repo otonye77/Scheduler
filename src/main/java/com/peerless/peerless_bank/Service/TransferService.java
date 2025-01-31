@@ -11,9 +11,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class TransferService implements  ITransferService {
     private final TransferRepository transferRepository;
+
+    public TransferService(TransferRepository transferRepository) {
+        this.transferRepository = transferRepository;
+    }
 
     @Override
     public void scheduleTransfer(Transfer transfer) {
