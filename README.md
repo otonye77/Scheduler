@@ -82,13 +82,13 @@ Endpoint: GET /api/transfers/scheduled/{senderAccountId}
 Response:
 
 [
-{
-"transferId": 101,
-"senderAccountId": 1,
-"recipientAccountId": 2,
-"transferAmount": 500.00,
-"transferDate": "2024-12-01T10:00:00"
-}
+   {
+   "transferId": 101,
+   "senderAccountId": 1,
+   "recipientAccountId": 2,
+   "transferAmount": 500.00,
+    "transferDate": "2024-12-01T10:00:00"
+   }
 ]
 
 Cancel a Scheduled Transfer
@@ -116,16 +116,3 @@ peerless_bank/
 ├── pom.xml
 └── README.md
 
-CREATE TABLE schedule_transfer (
-transfer_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-sender_account_id BIGINT NOT NULL,
-recipient_account_id BIGINT NOT NULL,
-transfer_amount DECIMAL(15,2) NOT NULL,
-transfer_date DATETIME NOT NULL,
-created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-Author
-
-Amietubodie Otonye
