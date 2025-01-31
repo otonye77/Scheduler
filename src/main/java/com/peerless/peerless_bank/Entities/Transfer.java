@@ -21,9 +21,6 @@ public class Transfer {
     @Column(name = "sender_account_id", nullable = false)
     private Long senderAccountId;
 
-    @Column(name = "sender_id", nullable = false) // Added sender_id field
-    private Long senderId;
-
     @Column(name = "recipient_account_id", nullable = false)
     private Long recipientAccountId;
 
@@ -39,6 +36,19 @@ public class Transfer {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    // Lifecycle callback to handle createdAt and updatedAt
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    // Manually added getters and setters (Lombok will generate these automatically)
     public Long getTransferId() {
         return transferId;
     }
@@ -53,14 +63,6 @@ public class Transfer {
 
     public void setSenderAccountId(Long senderAccountId) {
         this.senderAccountId = senderAccountId;
-    }
-
-    public Long getSenderId() {
-        return senderId;
-    }
-
-    public void setSenderId(Long senderId) {
-        this.senderId = senderId;
     }
 
     public Long getRecipientAccountId() {

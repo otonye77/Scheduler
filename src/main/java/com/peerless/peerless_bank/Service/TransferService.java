@@ -31,7 +31,7 @@ public class TransferService implements  ITransferService {
 
     @Override
     public List<Transfer> getScheduledTransfers(Long senderAccountId) {
-        return transferRepository.findBySenderId(senderAccountId);
+        return transferRepository.findBySenderAccountId(senderAccountId);
     }
 
     @Override

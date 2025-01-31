@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface TransferRepository extends JpaRepository<Transfer, Long> {
 
-    List<Transfer> findBySenderId(Long senderAccountId);
+    List<Transfer> findBySenderAccountId(Long senderAccountId);
 
     List<Transfer> findByTransferDateBefore(LocalDateTime now);
 }
